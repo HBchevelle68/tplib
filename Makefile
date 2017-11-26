@@ -13,24 +13,19 @@ ifneq ($(ARCH),Darwin)
   LFLAGS += -lpthread
 endif
 
-
-#all: $(OBJS)
-	#$(CC) -o $@ $(BTEST) $(LFLAGS)
-	#$(CC) -o $@ $(STEST) $(LFLAGS)
-
-lib: poolix.o 
-
 #tests: basictest.o stresstest.o
-
 #basictest.o: test/basictest.c src/poolix.h
-	#$(CC) $(CFLAGS) -I$(INC) test/basictest.c 
-
+	#$(CC) $(CFLAGS) -I$(INC) test/basictest.c
 #stresstest.o: test/stresstest.c src/poolix.h
-	#$(CC) $(CFLAGS) -I$(INC) test/stresstest.c	
+	#$(CC) $(CFLAGS) -I$(INC) test/stresstest.c
 
-poolix.o: src/poolix.c src/poolix.h
+
+all: $(OBJS)
+
+lib: poolix.o
+
+poolix.o: src/poolix.c src/poolix.h src/steque.h
 	$(CC) -c -o $@ $(CFLAGS) $(ASAN_FLAGS) $<
 
 clean:
-	rm *.o 
-	
+	rm *.o
