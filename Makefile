@@ -4,7 +4,7 @@ ASAN_LIBS = -static-libasan
 CFLAGS = -Wall -Werror --std=gnu99 -g3
 INC    = src
 
-OBJS   = poolix.o
+OBJS   = tplib.o
 #BTEST  = basictest.o poolix.o
 #STEST  = stresstest.o poolix.o
 
@@ -22,9 +22,9 @@ endif
 
 all: $(OBJS)
 
-lib: poolix.o
+lib: tplib.o
 
-poolix.o: src/poolix.c src/poolix.h src/steque.h
+tplib.o: src/tplib.c src/tplib.h src/steque.h
 	$(CC) -c -o $@ $(CFLAGS) $(ASAN_FLAGS) $<
 
 clean:

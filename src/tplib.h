@@ -1,5 +1,5 @@
-#ifndef _TPLIB_H
-#define _TPLIB_H
+#ifndef _POOLIX_H
+#define _POOLIX_H
 
 //Values just for dev purposes
 #define MAXTHREADS 	128
@@ -66,7 +66,7 @@ int add_task(struct threadpool_t *tp, void(*routine)(void*), void *args);
 */
 int tpool_exit(struct threadpool_t *tp); // need to fully implement
 
-// NOT IMPLEMENTED YET
+
 void geterror();
 
 #endif

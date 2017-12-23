@@ -4,7 +4,7 @@
 #include <pthread.h>	//pthreads
 
 #include "steque.h"
-#include "tplib.h"
+#include "poolix.h"
 
 
 /*
