@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "poolix.h"
+#include "tplib.h"
 
 pthread_mutex_t p_lock;
 
@@ -13,17 +13,17 @@ int test_1(){
 	// create pool then destroy pool
 	struct threadpool_t *pool;
 
-	if((pool = tpool_init(MAXTHREADS, MAXTASKS)) == NULL){
+	if((pool = tpool_init(MAXTHREADS)) == NULL){
 		printf("  [!] ERROR: POOL == NULL\n");
 		return 1;
 	}
-	printf("  [*] Created threadpool_t with %d threads and queue size of %d\n", MAXTHREADS, MAXTASKS);
+	printf("  [*] Created threadpool_t with %d worker threads\n", MAXTHREADS);
 
 	if(tpool_exit(pool)){
 		printf("  [!] ERROR: FREE POOL FAILURE\n");
 		return 1;
 	}
-	printf("  [*] Shutting down threadpool_t with %d threads and queue size of %d\n", MAXTHREADS, MAXTASKS);
+	printf("  [*] Shutting down threadpool_t with %d threads\n", MAXTHREADS);
 	printf("[+] Test-1: SUCCESSFUL\n");
 	return 0;
 }
@@ -54,16 +54,12 @@ int test_2(){
 }
 
 int main(int argc, char* argv[]){
-	
+
 	if(test_1()){
 		printf("[!] Test-1 failed\n");
 		return 1;
-	}	
-
-	if(test_2()){
-		printf("[!] Test-2 failed\n");
-		return 1;
 	}
+
 	return 0;
 }
 

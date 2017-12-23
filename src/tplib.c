@@ -4,7 +4,7 @@
 #include <pthread.h>	//pthreads
 
 #include "steque.h"
-#include "poolix.h"
+#include "tplib.h"
 
 
 /*
@@ -84,7 +84,7 @@ static void *thread_loop(void *threadpool){
 }
 
 
-struct threadpool_t *tpool_init(unsigned int t_count, unsigned int q_size){
+struct threadpool_t *tpool_init(unsigned int t_count){
 
     struct threadpool_t *tp;
 

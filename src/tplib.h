@@ -1,5 +1,5 @@
-#ifndef _POOLIX_H
-#define _POOLIX_H
+#ifndef _TPLIB_H
+#define _TPLIB_H
 
 //Values just for dev purposes
 #define MAXTHREADS 	128
@@ -39,9 +39,8 @@ enum ERROR{
 	          and returns NULL if an error occured.
 
 	@t_count - Thread count. Number of threads this pool will generate.
-	@q_size - Queue size, Number of tasks the pool can hold.
 */
-struct threadpool_t *tpool_init(unsigned int t_count, unsigned int q_size);
+struct threadpool_t *tpool_init(unsigned int t_count);
 
 /*
 	@brief - Adds a task (function) to the threadpool's queue to
