@@ -6,7 +6,7 @@ Threadpool Library in C
 * gcc 5.4.0 (See Makefile for compilation flags)
 * c99
 
-
+## Description
 * Boss-Worker model
 * No limit on number of workers (other than system limits)
 * No limit on number of tasks (other than system limits)
