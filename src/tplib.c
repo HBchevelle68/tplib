@@ -1,10 +1,11 @@
-#include <stdio.h>  	//std
-#include <stdlib.h>	//malloc and other mem functions
-#include <stdint.h> 	//uint16_t and other types
-#include <pthread.h>	//pthreads
+#include <stdio.h>    //std
+#include <stdlib.h>   //malloc and other mem functions
+#include <stdint.h>   //uint16_t and other types
+#include <pthread.h>  //pthreads
+#include <signal.h>   //singal handler
 
 #include "steque.h"
-#include "poolix.h"
+#include "tplib.h"
 
 
 /*
@@ -14,6 +15,8 @@
 */
 unsigned char error;
 
+steque_t threadpools;
+uint8_t multi_pool;
 
 // Struct that holds the function and arguments to execute
 typedef struct {
@@ -47,26 +50,54 @@ struct threadpool_t {
   uint16_t t_size;
 };
 
+
+
+
+static void _sig_handler(int signo){
+    if (signo == SIGINT || signo == SIGTERM){
+
+        exit(signo);
+    }
+}
+
+int pool_attrib(int mtp, int sighndl){
+
+  if(sighndl){
+    if (signal(SIGINT, _sig_handler) == SIG_ERR) {
+        fprintf(stderr,"[-] ERROR: Can't catch SIGINT...\n");
+        return FAILURE;
+    }
+    if (signal(SIGTERM, _sig_handler) == SIG_ERR) {
+        fprintf(stderr,"[-] ERROR: Can't catch SIGTERM...\n");
+        return FAILURE;
+    }
+  }
+  if(mtp){
+    steque_init(&threadpools);
+  }
+
+  return 0;
+}
+
+
+
 /*
     ALL threads will be constantly running this function
     They will loop and check to see if a job
     is in Queue. If there is a job it will grab the job
     and go execute it.
-
 */
-
 static void *thread_loop(void *threadpool){
 
     struct threadpool_t *tp = (struct threadpool_t *)threadpool;
     task_t *to_execute;
 
     while(1) {
-
-
         // Grab the function to execute
         if((tp->tp_status & SHUTDOWN) && tp->q_status == EMPTY){
             break;
         }
+
         pthread_mutex_lock(&(tp->q_lock));
         while(steque_isempty(&(tp->queue))){
             pthread_cond_wait(&(tp->q_cond), &(tp->q_lock));
@@ -80,11 +111,10 @@ static void *thread_loop(void *threadpool){
     }
 
     pthread_exit(NULL);
-    return NULL;
 }
 
 
-struct threadpool_t *tpool_init(unsigned int t_count, unsigned int q_size){
+struct threadpool_t *tpool_init(unsigned int t_count){
 
     struct threadpool_t *tp;
 
