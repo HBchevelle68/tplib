@@ -1,5 +1,5 @@
 #include <stdio.h>  	//std
-#include <stdlib.h>	  //malloc and other mem functions
+#include <stdlib.h>	//malloc and other mem functions
 #include <stdint.h> 	//uint16_t and other types
 #include <pthread.h>	//pthreads
 
@@ -38,13 +38,13 @@ typedef struct {
 
 */
 struct threadpool_t {
-	pthread_t *t_pool;
+  pthread_t *t_pool;
   steque_t queue;
-	pthread_mutex_t q_lock; // lock to access queue of tasks
+  pthread_mutex_t q_lock; // lock to access queue of tasks
   pthread_cond_t q_cond; // condition variable for queue of tasks
   uint8_t tp_status;
   uint8_t q_status;
-	uint16_t t_size;
+  uint16_t t_size;
 };
 
 /*
@@ -94,13 +94,13 @@ struct threadpool_t *tpool_init(unsigned int t_count, unsigned int q_size){
         return NULL;
     }
 
-  	tp->t_size = t_count;
+    tp->t_size = t_count;
     tp->tp_status = NOTRUNNING;
     tp->q_status = EMPTY;
 
     // INIT THREADS
     if((tp->t_pool = malloc(sizeof(pthread_t) * t_count)) == NULL){
-    	  error = MALLOC;
+    	error = MALLOC;
         return NULL;
     }
     // INIT QUEUE
