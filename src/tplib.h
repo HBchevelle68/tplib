@@ -2,8 +2,13 @@
 #define _TPLIB_H
 
 //Values just for dev purposes
-#define MAXTHREADS 	128
-#define MAXTASKS	1000
+#define MAXTHREADS 128
+
+#ifndef FAILURE
+  #define FAILURE 1
+#endif
+
+
 
 enum STATUS {
 	NOTRUNNING = 0,
@@ -28,9 +33,17 @@ enum ERROR{
 };
 
 
-// PUBLIC FUNCTIONS
+/* pool_attrib
+	@brief - Sets GLOBAL attributes for pool(s)
+	@return - Returns 0 if successful, 1 if errors
 
-/*
+	@mtp - multi-pool support flag. set to 1 if mps is desired.
+	       set to 0 if singualar pool
+
+*/
+int pool_attrib(int mps, int sighndl);
+
+/* tpool_init
 	@brief - Initializes a threadpool (struct threadpool_t) and
 	         returns a pointer to a allocated threadpool with
 	         t_count threads available and able to queue up
@@ -42,11 +55,11 @@ enum ERROR{
 */
 struct threadpool_t *tpool_init(unsigned int t_count);
 
-/*
+/* add_task
 	@brief - Adds a task (function) to the threadpool's queue to
 	         be exececuted.
 	@return - Returns 0 if successful. Returns 1 if error occured
-              and task is not added to Queue.
+            and task is not added to Queue.
 
 	@tp - Threadpool to add task to.
 	@routine - Function to add to queue
@@ -54,7 +67,7 @@ struct threadpool_t *tpool_init(unsigned int t_count);
 */
 int add_task(struct threadpool_t *tp, void(*routine)(void*), void *args);
 
-/*
+/* tpool_exit
 	@brief - Begins teardown of threadpool. Sets SHUTDOWN flag which
 	         waits for all threads to join. Then deallocates all
 	         memory.
@@ -63,9 +76,15 @@ int add_task(struct threadpool_t *tp, void(*routine)(void*), void *args);
 
 	@tp - Threadpool to teardown.
 */
-int tpool_exit(struct threadpool_t *tp); // need to fully implement
+int tpool_exit(struct threadpool_t *tp);
 
 
+
+/*
+
+            NEED TO IMPLEMENT
+
+*/
 void geterror();
 
 #endif
