@@ -102,7 +102,11 @@ static void *thread_loop(void *threadpool){
         pthread_mutex_lock(&(tp->q_lock));
         while(steque_isempty(&(tp->queue))){
             pthread_cond_wait(&(tp->q_cond), &(tp->q_lock));
+            if((tp->tp_status & SHUTDOWN)){
+                pthread_exit(NULL);
+            }
         }
+
         to_execute = steque_pop(&(tp->queue));
         pthread_mutex_unlock(&(tp->q_lock));
 
@@ -188,7 +192,7 @@ static int free_pool(struct threadpool_t *tp){
         error = NOPOOL;
         return 1;
     }
-
+    pthread_cond_broadcast(&(tp->q_cond));
     // Wait for threads to join
     for(int i = 0; i < tp->t_size; i++) {
         pthread_join(tp->t_pool[i], NULL);
