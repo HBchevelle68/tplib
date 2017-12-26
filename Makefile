@@ -18,6 +18,9 @@ lib: tplib.o steque.o
 basictest: basictest.o tplib.o steque.o
 	$(CC) -o $@ $(CFLAGS) $(ASAN_FLAGS) $^ $(LDFLAGS) $(ASAN_LIBS)
 
+%_noasan.o : %.c
+	$(CC) -c -o $@ $(CFLAGS) $<
+
 %.o : %.c
 	$(CC) -c -o $@ $(CFLAGS) $(ASAN_FLAGS) $<
 
