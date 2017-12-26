@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
+
 #include "tplib.h"
 
 
@@ -12,6 +13,7 @@ int main(){
     fprintf(stderr, "Error on tpool_init\n");
   }
   printf("here2\n");
+  //sleep(2);
   if(tpool_exit(workers)){
     fprintf(stderr, "Error on tpool_exit\n");
   }

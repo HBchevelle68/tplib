@@ -103,6 +103,7 @@ static void *thread_loop(void *threadpool){
         while(steque_isempty(&(tp->queue))){
             pthread_cond_wait(&(tp->q_cond), &(tp->q_lock));
             if((tp->tp_status & SHUTDOWN)){
+                pthread_mutex_unlock(&(tp->q_lock));
                 pthread_exit(NULL);
             }
         }
@@ -192,6 +193,7 @@ static int free_pool(struct threadpool_t *tp){
         error = NOPOOL;
         return 1;
     }
+    printf("WAKING THREADS\n");
     pthread_cond_broadcast(&(tp->q_cond));
     // Wait for threads to join
     for(int i = 0; i < tp->t_size; i++) {
