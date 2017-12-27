@@ -2,7 +2,7 @@
 #define _tplib_H
 
 //Values just for dev purposes
-#define MAXTHREADS 128
+#define TESTTHREADS 500
 
 #ifndef FAILURE
   #define FAILURE 1

@@ -2,21 +2,37 @@
 #include <pthread.h>
 #include <unistd.h>
 
-
 #include "tplib.h"
 
+#define RED     "\x1b[91m"
+#define GREEN   "\x1b[92m"
+#define YELLOW  "\x1b[93m"
+#define COLOR_RESET   "\x1b[0m"
+
+#define LOG_RED(X) printf("%s %s %s\n",RED, X, COLOR_RESET)
+#define LOG_GREEN(X) printf("%s %s %s\n",GREEN, X, COLOR_RESET)
+
+
+static
+int btest_1(){
+  struct threadpool_t *workers;
+  fprintf(stderr, "%s[+] Creating worker pool with %d threads %s\n",YELLOW, TESTTHREADS, COLOR_RESET);
+  if((workers = tpool_init(TESTTHREADS)) == NULL){
+    LOG_RED("[-] Error on tpool_init");
+    return 1;
+  }
+  if(tpool_exit(workers)){
+    LOG_RED("[-] Error on tpool_exit");
+    return 2;
+  }
+  return 0;
+}
 
 int main(){
-  printf("here1\n");
-  struct threadpool_t *workers;
-  if((workers = tpool_init(MAXTHREADS)) == NULL){
-    fprintf(stderr, "Error on tpool_init\n");
-  }
-  printf("here2\n");
-  //sleep(2);
-  if(tpool_exit(workers)){
-    fprintf(stderr, "Error on tpool_exit\n");
-  }
-  printf("here3\n");
-  return 0;
+    int ret;
+    if((ret = btest_1()) > 0){
+      LOG_RED("[-] Basic Test 1 failure");
+    }
+    LOG_GREEN("[+] Basic Test 1 successful");
+    return 0;
 }
