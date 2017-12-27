@@ -95,10 +95,8 @@ static void *thread_loop(void *threadpool){
 
     while(1) {
         if((tp->tp_status & SHUTDOWN) && tp->q_status == EMPTY){
-          // Grab the function to execute
             break;
         }
-
         pthread_mutex_lock(&(tp->q_lock));
         while(steque_isempty(&(tp->queue))){
             pthread_cond_wait(&(tp->q_cond), &(tp->q_lock));
@@ -107,15 +105,14 @@ static void *thread_loop(void *threadpool){
                 pthread_exit(NULL);
             }
         }
-
+        //Pop task from Queue and release lock
         to_execute = steque_pop(&(tp->queue));
         pthread_mutex_unlock(&(tp->q_lock));
 
         // Begin execution of function
         (to_execute->routine)(to_execute->args);
-
     }
-
+    //Only gets here on 1st IF statement
     pthread_exit(NULL);
 }
 
@@ -131,7 +128,7 @@ struct threadpool_t *tpool_init(unsigned int t_count){
     }
 
     tp->t_size = t_count;
-    tp->tp_status = NOTRUNNING;
+    tp->tp_status = NOTRUNNING; //still not really used yet
     tp->q_status = EMPTY;
 
     // INIT THREADS

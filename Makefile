@@ -2,8 +2,9 @@ CC     = gcc
 ASAN_FLAGS = -fsanitize=address -fno-omit-frame-pointer -Wno-format-security
 ASAN_LIBS = -static-libasan
 CFLAGS = -Wall -Werror --std=gnu99 -g3
-#BTEST  = basictest.o poolix.o
-#STEST  = stresstest.o poolix.o
+
+OBJ = tplib.o steque.o
+OBJ_NOSAN = tplib_noasan.o steque_noasan.o
 
 ARCH := $(shell uname)
 ifneq ($(ARCH),Darwin)
@@ -11,18 +12,21 @@ ifneq ($(ARCH),Darwin)
 endif
 
 # default is to build with address sanitizer enabled
-all: basictest
+all: clean basictest
 
 lib: tplib.o steque.o
 
-basictest: basictest.o tplib.o steque.o
-	$(CC) -o $@ $(CFLAGS) $(ASAN_FLAGS) $^ $(LDFLAGS) $(ASAN_LIBS)
+basictest: basictest.o $(OBJ)
+	$(CC) -o $@ $(CFLAGS) $(ASAN_FLAGS) $^ $(LFLAGS) $(ASAN_LIBS)
 
-%_noasan.o : %.c
+basictest_noasan: basictest_noasan.o $(OBJ_NOSAN)
+	$(CC) -o $@ $(CFLAGS) $^ $(LFLAGS)
+
+%_noasan.o: %.c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
-%.o : %.c
+%.o: %.c
 	$(CC) -c -o $@ $(CFLAGS) $(ASAN_FLAGS) $<
 
 clean:
-		rm -fr *.o basictest
+		rm -fr *.o basictest basictest_noasan
