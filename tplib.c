@@ -15,6 +15,7 @@
 */
 unsigned char error;
 
+pthread_mutex_t mp_lock = PTHREAD_MUTEX_INITIALIZER;
 steque_t threadpools;
 uint8_t multi_pool;
 
@@ -25,7 +26,7 @@ typedef struct {
 } task_t;
 
 /*
-    The core pool
+    Single Threadpool
 
     pthread_t *t_pool       - Thread array
     task_t *queue           - Queue holding tasks
@@ -125,6 +126,14 @@ struct threadpool_t *tpool_init(unsigned int t_count){
     if((tp = malloc(sizeof(struct threadpool_t))) == NULL) {
         error = MALLOC;
         return NULL;
+    }
+    // If multi-pool support is desired queue all threadpools
+    if(multi_pool){
+      steque_item *itm;
+      itm = (void*)tp;
+      pthread_mutex_lock(&mp_lock);
+      steque_enqueue(&threadpools, itm);
+      pthread_mutex_unlock(&mp_lock);
     }
 
     tp->t_size = t_count;

@@ -78,7 +78,10 @@ int add_task(struct threadpool_t *tp, void(*routine)(void*), void *args);
 */
 int tpool_exit(struct threadpool_t *tp);
 
+/* multi_pool_exit
 
+*/
+int multi_pool_exit();
 
 /*
 
