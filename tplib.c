@@ -15,6 +15,7 @@
 */
 unsigned char error;
 
+// MOVE TO NEW SOURCE AND HEADER FILES
 pthread_mutex_t mp_lock = PTHREAD_MUTEX_INITIALIZER;
 steque_t threadpools;
 uint8_t multi_pool;
