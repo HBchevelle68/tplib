@@ -1,9 +1,9 @@
 CC     = gcc
 ASAN_FLAGS = -fsanitize=address -fno-omit-frame-pointer -Wformat-security
 ASAN_LIBS = -static-libasan
-CFLAGS = -Wall -Werror --std=gnu99 -g3
+CFLAGS = -Wall -Werror -std=gnu11 -g3
 
-OBJ = tplib.o steque.o
+OBJ = bwpool.o steque.o
 OBJ_NOSAN = tplib_noasan.o steque_noasan.o
 
 ARCH := $(shell uname)
@@ -14,7 +14,7 @@ endif
 # default is to build with address sanitizer enabled
 all: clean basictest
 
-lib: tplib.o steque.o
+lib: clean bwpool.o pipeline.o steque.o
 
 basictest: basictest.o $(OBJ)
 	$(CC) -o $@ $(CFLAGS) $(ASAN_FLAGS) $^ $(LFLAGS) $(ASAN_LIBS)
