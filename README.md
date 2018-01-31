@@ -1,5 +1,5 @@
 # tplib
-Threadpool Library in C
+Threadpool Library in C I made for fun.
 
 ## Environment
 * Ubuntu 16.04.1 (Kernel: 4.10.0-42)
