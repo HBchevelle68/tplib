@@ -86,6 +86,7 @@ static void *thread_loop(void *threadpool){
 
         // Begin execution of function
         (to_execute->routine)(to_execute->args);
+        free(to_execute);
     }
     //Only gets here on 1st IF statement
     pthread_exit(NULL);
