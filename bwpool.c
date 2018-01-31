@@ -157,7 +157,8 @@ int add_task(struct threadpool_t *tp, void (*routine)(void*), void *args){
 
     @tp - Threadpool to teardown
 */
-static int free_pool(struct threadpool_t *tp){
+static
+int free_pool(struct threadpool_t *tp){
 
     // Make sure thread pool got allocated
     // Repeat process of checking for allocated memory

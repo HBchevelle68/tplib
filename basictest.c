@@ -57,7 +57,7 @@ int btest_2(){
     for(int i = 0; i < 500; i++){
         add_task(workers, testfunc, NULL);
     }
-    sleep(3);
+    sleep(2);
     fprintf(stderr, "%s[*] Tearing down threadpool...%s\n",YELLOW, COLOR_RESET);
     if(tpool_exit(workers)){
       LOG_RED("[-] Error on tpool_exit");
@@ -78,6 +78,9 @@ int main(){
     }
     LOG_GREEN("[+] Basic Test 1 successful");
 
-    btest_2();
+    if((ret = btest_2()) > 0){
+      LOG_RED("[-] Basic Test 2 failure");
+    }
+    LOG_GREEN("[+] Basic Test 2 successful");
     return 0;
 }
