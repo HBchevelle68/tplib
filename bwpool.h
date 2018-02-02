@@ -8,17 +8,17 @@
   #define FAILURE 1
 #endif
 
+
 enum STATUS {
 	NOTRUNNING = 0,
 	RUNNING = 	 1,
-	SHUTDOWN =   2,
-	FORCE =      4
+	GRACEFUL =   2,
+	SHUTDOWN =   4
 };
 
 enum Q_STATUS{
-	EMPTY = 	0,
-	TODO = 		1,
-	FULL = 	  2
+	TODO = 	0,
+	EMPTY = 1
 };
 
 enum ERROR{
@@ -26,8 +26,7 @@ enum ERROR{
 	MALLOC =   1,
 	PTCREATE = 2,
 	MLOCK =	   4,
-	NOPOOL =   8,
-	QFULL =   10
+	NOPOOL =   8
 };
 
 

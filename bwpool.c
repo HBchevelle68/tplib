@@ -26,13 +26,10 @@ typedef struct {
 
     pthread_t *t_pool       - Thread array
     task_t *queue           - Queue holding tasks
-    stats_t *stats          - NOT IMPLEMENTED YET
     pthread_mutex_t q_lock  - Mutex to access queue of tasks
-    pthread_mutex_t s_lock  - Mutex to access status flags
+    pthread_mutex_t q_cond  - Condition variable for Queue
     uint8_t tp_status       - Threadpool status flags
     uint8_t q_status        - Queue status flags
-    uint16_t ntask          - Index of Next Task to execute
-    uint16_t nopen          - Index of Next Open spot in Q
     uint16_t t_size         - Number of threads for pool
     uint16_t q_size         - Number of tasks for pool
 
@@ -48,15 +45,11 @@ struct threadpool_t {
 };
 
 
-
-/*
-static void _sig_handler(int signo){
-    if (signo == SIGINT || signo == SIGTERM){
-
-        exit(signo);
-    }
+static void safe_exit(struct threadpool_t *tp){
+    pthread_mutex_unlock(&(tp->q_lock));
+    pthread_exit(NULL);
 }
-*/
+
 /*
     ALL threads will be constantly running this function
     They will loop and check to see if a job
@@ -69,16 +62,12 @@ static void *thread_loop(void *threadpool){
     task_t *to_execute;
 
     while(1) {
-        if((tp->tp_status & SHUTDOWN) && tp->q_status == EMPTY){
-            break;
-        }
+        if((tp->tp_status & SHUTDOWN)){ break; }
         pthread_mutex_lock(&(tp->q_lock));
-        while(steque_isempty(&(tp->queue))){
+        while((tp->q_status = steque_isempty(&(tp->queue)))){
+            if((tp->tp_status == GRACEFUL)){ safe_exit(tp); }
             pthread_cond_wait(&(tp->q_cond), &(tp->q_lock));
-            if((tp->tp_status & SHUTDOWN)){
-                pthread_mutex_unlock(&(tp->q_lock));
-                pthread_exit(NULL);
-            }
+            if((tp->tp_status == SHUTDOWN)){ safe_exit(tp); }
         }
         //Pop task from Queue and release lock
         to_execute = steque_pop(&(tp->queue));
@@ -144,6 +133,7 @@ int add_task(struct threadpool_t *tp, void (*routine)(void*), void *args){
 
     pthread_mutex_lock(&(tp->q_lock));
     steque_enqueue(&(tp->queue), item);
+    tp->q_status = TODO;
     pthread_mutex_unlock(&(tp->q_lock));
     pthread_cond_broadcast(&(tp->q_cond));
 
@@ -193,7 +183,7 @@ int free_pool(struct threadpool_t *tp){
 
 int tpool_exit(struct threadpool_t *tp){
 
-    tp->tp_status |= SHUTDOWN;
+    tp->tp_status = SHUTDOWN;
     if(free_pool(tp)){
         printf("ERROR in free_pool()\n");
         return 1;

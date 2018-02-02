@@ -52,7 +52,6 @@ int btest_2(){
         return 1;
     }
 
-
     fprintf(stderr, "%s[*] Adding 500 functions to work queue%s\n",YELLOW, COLOR_RESET);
     for(int i = 0; i < 500; i++){
         add_task(workers, testfunc, NULL);
